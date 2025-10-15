@@ -5,7 +5,7 @@ This project implements a **fully automated, end-to-end machine learning pipelin
 
 Created By-
 **Pranit Gore**
-** Contact Me- pranitgore05@gmail.com **
+**Contact Me- pranitgore05@gmail.com**
 ---
 
 ## ✨ Core Features & Key Advantages
@@ -50,7 +50,7 @@ Configure dimensionality reduction in the JSON file using one of three options:
 | **`Tree-based`** | Selects important features using an `ExtraTrees` model. |
 | **`None`** | Keeps all original features (`passthrough`). |
 
-### 4. 🧠 Dynamic Model Selection & Tuning
+### 4.  Dynamic Model Selection & Tuning
 
 1.  The script reads all algorithms marked `"is_selected": true` from the JSON.
 2.  A complete `Pipeline` is built for each model: `[Preprocess, Feature Reduction, Model]`.
@@ -60,7 +60,7 @@ Configure dimensionality reduction in the JSON file using one of three options:
 > * **Regression:** `RandomForestRegressor`, `Ridge`, `Lasso`, `SVR`.
 > * **Classification:** `RandomForestClassifier`, `SVC`.
 
-### 5. 🎯 Metric Evaluation
+### 5. Metric Evaluation
 
 The best-performing model is evaluated, and the results are printed:
 
@@ -69,7 +69,7 @@ The best-performing model is evaluated, and the results are printed:
 
 ---
 
-## 📖 Example JSON Configuration
+##  Example JSON Configuration
 
 This snippet sets up a **Regression** task using **PCA** and tunes a **RandomForestRegressor** with a defined range of trees and depth.
 
@@ -95,4 +95,5 @@ This snippet sets up a **Regression** task using **PCA** and tunes a **RandomFor
     }
   }
 }
+
 
