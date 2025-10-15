@@ -20,12 +20,12 @@ In short, you only modify the JSON file, and this script does everything else au
 
 ## **Core Features**
 
-✅ JSON-Driven Workflow – No code changes needed. Modify the JSON file to change models, features, or parameters.
-✅ Dynamic Preprocessing – Automatically detects numerical and categorical columns and applies imputers and encoders.
-✅ Feature Reduction – Supports PCA, Tree-based feature selection, or None.
-✅ Model Selection – Chooses models (RandomForest, Ridge, Lasso, SVM, etc.) based on JSON configuration.
-✅ Hyperparameter Tuning – Uses GridSearchCV for automated best-parameter selection.
-✅ Auto Metric Evaluation – Chooses the right metrics:
+- JSON-Driven Workflow – No code changes needed. Modify the JSON file to change models, features, or parameters.
+- Dynamic Preprocessing – Automatically detects numerical and categorical columns and applies imputers and encoders.
+- Feature Reduction – Supports PCA, Tree-based feature selection, or None.
+- Model Selection – Chooses models (RandomForest, Ridge, Lasso, SVM, etc.) based on JSON configuration.
+- Hyperparameter Tuning – Uses GridSearchCV for automated best-parameter selection.
+- Auto Metric Evaluation – Chooses the right metrics:
 
 Regression → R², MAE, MSE
 
@@ -183,4 +183,5 @@ It is ideal for:
 
 - Experimentation pipelines
 - Automated ML assignment evaluation
+
 - Research & benchmarking setups
