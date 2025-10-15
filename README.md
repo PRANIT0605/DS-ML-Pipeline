@@ -3,7 +3,7 @@
 
 This project implements a **fully automated, end-to-end machine learning pipeline** built from scratch using **Python** and **Scikit-learn**. The entire workflow—from data preprocessing to model tuning and evaluation—is controlled by a single JSON configuration file, requiring **zero code changes** to run new experiments.
 
-Created By-
+### Created By-
 ### **Pranit Gore**
 ### Contact Me- ***pranitgore05@gmail.com***
 ---
@@ -95,6 +95,7 @@ This snippet sets up a **Regression** task using **PCA** and tunes a **RandomFor
     }
   }
 }
+
 
 
 
