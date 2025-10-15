@@ -5,7 +5,7 @@ This project implements a **fully automated, end-to-end machine learning pipelin
 
 Created By-
 ### **Pranit Gore**
-### **Contact Me- ***pranitgore05@gmail.com***
+### Contact Me- ***pranitgore05@gmail.com***
 ---
 
 ## ✨ Core Features & Key Advantages
@@ -95,6 +95,7 @@ This snippet sets up a **Regression** task using **PCA** and tunes a **RandomFor
     }
   }
 }
+
 
 
 
