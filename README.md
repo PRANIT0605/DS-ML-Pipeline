@@ -1,126 +1,82 @@
-# AutoML JSON-Driven Model Builder
-## A generic, configurable pipeline for dynamic ML model training and evaluation
-### **Overview**
+# 🤖 JSON-Driven AutoML Pipeline
 
-This project implements a fully automated, JSON-driven machine learning pipeline built entirely from scratch using Python and Scikit-learn.
+## A Configurable Framework for Dynamic ML Model Training and Evaluation
 
-It allows users to:
-- Load any dataset (e.g., iris.csv)
-- Define all pipeline settings in a single JSON configuration file (algoparams.json)
+This project implements a **fully automated, end-to-end machine learning pipeline** built from scratch using **Python** and **Scikit-learn**. The entire workflow—from data preprocessing to model tuning and evaluation—is controlled by a single JSON configuration file, requiring **zero code changes** to run new experiments.
 
-Automatically:
+---
 
-- Handle features (categorical & numerical)
-- Apply imputations and encodings
-- Perform feature reduction (PCA / Tree-based)
-- Select and tune ML models dynamically
-- Evaluate metrics for regression or classification tasks in one go
+## ✨ Core Features & Key Advantages
 
-In short, you only modify the JSON file, and this script does everything else automatically — preprocessing, model tuning, and metric computation.
+| Feature | Description |
+| :--- | :--- |
+| **JSON-Driven Workflow** | Change models, features, and parameters by editing `algoparams.json`. **No Python code modification is needed.** |
+| **Dynamic Preprocessing** | Automatically handles **numerical** (imputation) and **categorical** (encoding) columns using `ColumnTransformer`. |
+| **Automated Tuning** | Uses **GridSearchCV** for automated, efficient hyperparameter search. |
+| **Model & Task Agnostic** | Works seamlessly for both **Regression** and **Classification** tasks. |
+| **Feature Reduction** | Configurable support for **PCA** or **Tree-based** feature selection. |
+| **Clear Evaluation** | Automatically selects and reports the correct metrics for the defined task. |
 
-## **Core Features**
+---
 
-- JSON-Driven Workflow – No code changes needed. Modify the JSON file to change models, features, or parameters.
-- Dynamic Preprocessing – Automatically detects numerical and categorical columns and applies imputers and encoders.
-- Feature Reduction – Supports PCA, Tree-based feature selection, or None.
-- Model Selection – Chooses models (RandomForest, Ridge, Lasso, SVM, etc.) based on JSON configuration.
-- Hyperparameter Tuning – Uses GridSearchCV for automated best-parameter selection.
-- Auto Metric Evaluation – Chooses the right metrics:
+## 🛠️ Pipeline Architecture (How It Works)
 
-Regression → R², MAE, MSE
+The script executes a series of steps based entirely on the settings within the `algoparams.json` file.
 
-Classification → Accuracy, F1 Score
+### 1. 📥 Configuration & Data Loading
 
-## Pipeline Architecture
-Step 1: Dataset Loading
-data = pd.read_csv("iris.csv")
+* Loads the dataset (e.g., `iris.csv`).
+* The JSON file defines the **target column** and the **prediction type** (e.g., `"regression"`).
+* Reads all design parameters, including feature lists, reduction method, and algorithm-specific hyperparameter ranges.
 
-- Loads the dataset dynamically (you can replace with any dataset).
-- JSON defines which column is the target variable.
+### 2. ⚙️ Automated Preprocessing
 
-Step 2: Configuration Loading
-with open("algoparams.json") as f:
-    config = json.load(f)["design_state_data"]
+Features are handled dynamically based on their type:
 
+* **Numerical:** Applies `SimpleImputer(strategy="mean")`.
+* **Categorical:** Applies `OneHotEncoder(handle_unknown="ignore")`.
 
-Reads pipeline design parameters from the JSON file.
+These steps are combined using a `ColumnTransformer` for simultaneous, robust processing.
 
-Includes information such as:
-- Target column & prediction type
-- Feature handling (categorical/numerical)
-- Feature reduction technique
-- Algorithms & their hyperparameter ranges
+### 3. 📉 Feature Reduction (Optional)
 
-Step 3: Feature Handling
+Configure dimensionality reduction in the JSON file using one of three options:
 
-Automatically separates columns:
+| Method | Description |
+| :--- | :--- |
+| **`PCA`** | Principal Component Analysis (Dimensionality Reduction). |
+| **`Tree-based`** | Selects important features using an `ExtraTrees` model. |
+| **`None`** | Keeps all original features (`passthrough`). |
 
-- Numerical → Uses SimpleImputer(strategy="mean")
-- Categorical → Uses OneHotEncoder(handle_unknown="ignore")
-These are combined using a ColumnTransformer, ensuring both types are processed in parallel.
+### 4. 🧠 Dynamic Model Selection & Tuning
 
-Step 4: Feature Reduction
+1.  The script reads all algorithms marked `"is_selected": true` from the JSON.
+2.  A complete `Pipeline` is built for each model: `[Preprocess, Feature Reduction, Model]`.
+3.  **Grid Search:** `GridSearchCV` is executed against the full pipeline using the hyperparameter ranges provided in the JSON.
 
-Supports three configurable reduction methods:
-- PCA → Dimensionality reduction via principal components
-- Tree-based → Selects important features using ExtraTrees models
-- None / passthrough → Keeps all features
+> **Supported Models (Example):**
+> * **Regression:** `RandomForestRegressor`, `Ridge`, `Lasso`, `SVR`.
+> * **Classification:** `RandomForestClassifier`, `SVC`.
 
-Defined dynamically by:
+### 5. 🎯 Metric Evaluation
 
-feature_reduction_method: "PCA" or "Tree-based" or "None"
-in the JSON file.
+The best-performing model is evaluated, and the results are printed:
 
-Step 5: Model Selection
+* **Regression:** $R^2$, MAE, MSE
+* **Classification:** Accuracy, F1 Score
 
-- The function get_models() dynamically reads selected algorithms from the JSON file:
-- Each algorithm includes its tuning parameters and flags like "is_selected": true
-- Builds a tuple list: (model_name, model_object, param_grid)
+---
 
-Supported models:
-- Regression: RandomForestRegressor, LinearRegression, Ridge, Lasso, DecisionTree, SVR
-- Classification: RandomForestClassifier, SVC
-- Each model’s hyperparameters are directly extracted from the JSON (e.g., number of trees, max depth, regularization strength, etc.).
+## 📖 Example JSON Configuration
 
-Step 6: Grid Search and Evaluation
+This snippet sets up a **Regression** task using **PCA** and tunes a **RandomForestRegressor** with a defined range of trees and depth.
 
-For each model:
-Builds a complete pipeline:
-
-pipe = Pipeline([
-    ("preprocess", preprocessor),
-    ("reduce", feature_reduction_step),
-    ("model", model)
-])
-
-
-### Runs a grid search:
-grid = GridSearchCV(pipe, param_grid, cv=3, scoring=scoring_metric)
-
-
-### Evaluates performance:
-- Regression: R², MAE, MSE
-- Classification: Accuracy, F1-score
-- Prints best parameters and metrics:
-
-Running model: RandomForestRegressor
-Best Params: {'model__max_depth': 20, 'model__n_estimators': 50}
-R2: 0.89
-MAE: 0.16
-MSE: 0.05
-------------------------------------------------------------
-
-##  Example JSON Configuration
+```json
 {
   "design_state_data": {
     "target": {
       "target": "petal_width",
       "prediction_type": "regression"
-    },
-    "feature_handling": {
-      "sepal_length": {"is_selected": true, "feature_variable_type": "numerical"},
-      "sepal_width": {"is_selected": true, "feature_variable_type": "numerical"},
-      "petal_length": {"is_selected": true, "feature_variable_type": "numerical"}
     },
     "feature_reduction": {
       "feature_reduction_method": "PCA",
@@ -132,56 +88,9 @@ MSE: 0.05
         "min_trees": 10,
         "max_trees": 20,
         "min_depth": 5,
-        "max_depth": 25,
-        "min_samples_per_leaf_min_value": 1,
-        "min_samples_per_leaf_max_value": 5
+        "max_depth": 25
       }
     }
+    // ... feature_handling and other settings
   }
 }
-
-## Output Example
-Target Column: petal_width | Prediction Type: regression
-Dataset Shape: (150, 5)
-
-## Running model: RandomForestRegressor
-Best Params: {'model__max_depth': 20, 'model__min_samples_leaf': 5, 'model__n_estimators': 20}
-R2: 0.793
-MAE: 0.293
-MSE: 0.132
-------------------------------------------------------------
-
-## Key Advantages
-
-- Generic Framework: Works for both regression and classification tasks.
-- Modular Design: Every stage (preprocessing, feature selection, modeling) can be swapped independently.
-- Human-Readable Config: Non-developers can control experiments via JSON.
-- Fast Experimentation: Change models and rerun instantly — no code changes required.
-- Scalable: Easily extendable to include new algorithms or feature engineering blocks.
-
-## How to Run
-
-- Place your dataset (e.g., iris.csv) in the same directory.
-- Configure your parameters in algoparams.json.
-
-Run:
-## **python main.py**
-
-Observe metrics for all selected models printed to console.
-
-## Future Improvements
-
-- Add Auto-save results to CSV/Excel.
-- Integrate visualization dashboards (e.g., Power BI or Streamlit).
-- Extend to neural networks or XGBoost/LightGBM.
-- Include automatic feature scaling options per JSON.
-
-## Conclusion
-
-This project demonstrates how to create a generic AutoML system without relying on third-party frameworks.
-It is ideal for:
-
-- Experimentation pipelines
-- Automated ML assignment evaluation
-
-- Research & benchmarking setups
